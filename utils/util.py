@@ -33,3 +33,16 @@ def carregaContratos():
     
     opcoes.sort()
     return opcoes
+
+def carregaInstrumentos():
+    arqContratos = open("data/contratos.json")
+    dadosContratos = json.load(arqContratos)
+    arqContratos.close()
+    opcoes = []
+
+    return dadosContratos
+    for contrato in dadosContratos["VW_CONTRATO_V2"]:
+        opcoes.append(contrato["DSC_CONTRATO"])
+    
+    opcoes.sort()
+    return opcoes
