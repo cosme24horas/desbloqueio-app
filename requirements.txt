@@ -1,3 +1,9 @@
 streamlit
 pandas
 io
+StringIO
+pandas
+re
+requests
+os
+json

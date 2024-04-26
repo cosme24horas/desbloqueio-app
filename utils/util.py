@@ -1,10 +1,8 @@
 from datetime import datetime
 import pandas as pd
 import requests
-import os
 import json
 import re
-import streamlit as st #
 
 # Dicionário de erros
 erros = {
