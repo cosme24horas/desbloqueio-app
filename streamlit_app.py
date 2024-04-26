@@ -24,7 +24,6 @@ def welcome():
     st.success("Autenticado!")
     st.button("Log out", on_click=logout)
 
-
 if st.session_state.status != "verified":
     login_prompt()
     st.stop()
