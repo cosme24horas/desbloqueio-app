@@ -35,7 +35,7 @@ with tab1:
         #mes_referencia = st.selectbox('Mês referência',['01 - Janeiro','02 - Fevereiro','03 - Março','04 - Abril','05 - Maio','06 - Junho','07 - Julho','08 - Agosto','09 - Setembro','10 - Outubro','11 - Novembro','12 - Dezembro'],index=None,placeholder="Selecione o mês referência")
         #linha = st.text_input("Linha da planilha de Desbloqueio")
         tipoarquivoEscolhido = st.selectbox('Tipo de Arquivo',tipoArquivo,index=None,placeholder="Selecione o Tipo de Arquivo")
-        arquivo = st.file_uploader("Arquivo da ser verificado",type="csv",help="Envie um arquivo de cada vez")        
+        arquivo = st.file_uploader("Arquivo da ser verificado",type="csv",help="Envie um arquivo de cada vez")
         processou = st.form_submit_button("Processar")     
         
         if processou:
