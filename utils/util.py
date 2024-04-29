@@ -1,14 +1,16 @@
-from datetime import datetime
 import pandas as pd
 import requests
 import json
 import re
+## DEBUG ##
+#import streamlit as st
 
 # Dicionário de erros
 erros = {
     "01": "Todos os campos devem ser preenchidos!",
     "02": "O arquivo NÃO está no formato UTF-8!",
-    "03": "O arquivo não tem o layout de Despesas ou não é compatível com o modelo DESPESAS GNOSIS."
+    "03": "O arquivo não tem o layout de Despesas ou não é compatível com o modelo DESPESAS GNOSIS.",
+    "04": "O arquivo não tem o layout de Contratos de Terceiros ou não é compatível com o modelo ANEXOS."
 }
 
 def carregaSecretarias():
@@ -52,14 +54,7 @@ def carregaInstrumentos():
 
     return dadosContratos
 
-def validar_data(data):
-    padrao = re.compile(r'^\d{4}-\d{2}-\d{2}$')
-    if data and re.match(padrao, data):
-        return "Sim"
-    else:
-        return "Não"
-
-class verificarPDF:
+class Validadora:
     def __init__(self, base_url,instituicao):        
         self.base_url = base_url  # URL base para a verificação dos arquivos PDF.        
         self.instituicao = instituicao # Código da instituição
@@ -71,8 +66,9 @@ class verificarPDF:
             self.coluna_imagem = self.coluna_imagem + '.pdf'
         self.url_formatada = self.base_url.format(numero_da_instituicao=self.instituicao, nome_do_pdf=self.coluna_imagem)        
 
-    def verificar(self,nome_imagem):
+    def validarPDF(self,nome_imagem):
         self.formatar_url(nome_imagem)        
+        #return "Valdação não realizada"    
         try:
             response = requests.head(self.url_formatada)
             # Avaliação do status do arquivo baseado no tamanho indicado no cabeçalho.
@@ -83,5 +79,36 @@ class verificarPDF:
             else:
                 status = 'Não'
         except requests.RequestException as e:
-            status = f'Erro de verificação: {str(e)}'       
+            status = f'Erro de verificação: {str(e)}'
         return str(status)
+    
+    def validarData(self,data = None):
+        padrao = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+        if data is not None:
+            if re.match(padrao, str(data)):
+                return "Sim"
+            else:
+                return "Não"
+        else:
+            return "Não"
+        
+    def validarDataAbreviada(self,data = None):
+        padrao = re.compile(r'^\d{4}-\d{2}')
+        if data is not None:
+            if re.match(padrao, str(data)):
+                return "Sim"
+            else:
+                return "Não"
+        else:
+            return "Não"        
+        
+    def validarCabecalho(self):
+        pass
+
+class Modelos:
+    Despesas = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;TIPO;CODIGO;CNPJ;RAZAO;CPF;NOME;NUM_DOCUMENTO;SERIE;DESCRICAO;DATA_EMISSAO;DATA_VENCIMENTO;DATA_PAGAMENTO;DATA_APURACAO;VALOR_DOCUMENTO;VALOR_PAGO;DESPESA;RUBRICA;BANCO;AGENCIA;CONTA_CORRENTE;PMT_PAGA;QTDE_PMT;IDENT_BANCARIO;FLAG_JUSTIFICATIVA'
+    ContratosTerceiros = 'COD_OS;COD_UNIDADE;COD_CONTRATO;RAZAO_SOCIAL;CNPJ;SERVICO;VALOR_MES;VIGENCIA;CONTRATO_ANO_MES_INICIO;CONTRATO_ANO_MES_FIM;REF_TRI;REF_ANO_MES;IMG_CONTRATO'
+
+
+
+    
