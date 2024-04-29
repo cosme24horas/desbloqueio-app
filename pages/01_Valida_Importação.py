@@ -7,13 +7,12 @@ import pandas as pd
 import re
 import datetime
 
-tipoArquivo = ['Despesas','Contratos de Terceiros']
-#tipoArquivo = ['Despesas','Contratos de Terceiros','Saldos','Receitas']
-
 st.set_page_config(
     page_title='Valida Arquivos de Importação',
     page_icon=':shopping_bags:', # This is an emoji shortcode. Could be a URL too    
 )
+
+tipoArquivo = ['Despesas','Contratos de Terceiros']
 
 tab1, tab2 = st.tabs(["Envio de Arquivo","Consulta Arquivos Enviados"])
 with tab1:
