@@ -9,17 +9,14 @@ import datetime
 
 st.set_page_config(
     page_title='Valida Arquivos de Importação',
-    page_icon=':shopping_bags:', # This is an emoji shortcode. Could be a URL too    
+    page_icon='https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f5a5.svg', # This is an emoji shortcode. Could be a URL too    
 )
 
 tipoArquivo = ['Despesas','Contratos de Terceiros']
 
 tab1, tab2 = st.tabs(["Envio de Arquivo","Consulta Arquivos Enviados"])
 with tab1:
-    # Set the title that appears at the top of the page.
-    '''
     # Valida Arquivo de Importação
-    '''
 
     secretarias = util.carregaSecretarias()
     instituicoes = util.carregaInstituicoes()
@@ -41,35 +38,35 @@ with tab1:
             if arquivo and tipoarquivoEscolhido: #and secretariaEscolhida and contratoEscolhido and oficio and linha :
                 with st.spinner('Processando...'):
                     try:
-                        string_data = StringIO(arquivo.getvalue().decode("utf-8"))
+                        string_data = StringIO(arquivo.getvalue().decode("utf-8-sig"))
                         cabecalhoArquivo = string_data.readline()
-                        string_data.close()
-                        cabecalhoArquivo = cabecalhoArquivo.replace(" ","").strip('\r\n').upper()                        
-                        cabecalhoArquivo = cabecalhoArquivo.split(";")
-                        cabecalhoArquivo.pop(0)
+                        string_data.close()                        
+                        meuModelo = util.Modelo()
+                        cabecalhoArquivo = meuModelo.trataCabecalho(cabecalhoArquivo)                    
 
                         if tipoarquivoEscolhido == "Despesas":
                             #Início das validações
-                            #Valida se o cabeçalho é de um arquivo de Despesas
-                            cabecalhoDespesas = util.Modelos.Despesas
-                            cabecalhoDespesas = cabecalhoDespesas.strip('\r\n').upper()
-                            cabecalhoDespesas = cabecalhoDespesas.split(";")
-                                
-                            if cabecalhoArquivo == cabecalhoDespesas:
-                                st.write('O cabeçalho é compatível com o modelo DESPESAS GNOSIS.')                                
+                            #Valida se o cabeçalho é de um arquivo de Despesas                            
+                            cabecalhoDespesas = meuModelo.retornaCabecalhoDespesas()
+
+                            if meuModelo.contemCabecalho(cabecalhoDespesas,cabecalhoArquivo):
+                                st.write('O cabeçalho é compatível com o modelo DESPESAS GNOSIS.')                        
                                 df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)                                                  
                                 df = df.dropna(how='all')
-                                verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])                                
+                                df.fillna(0,inplace=True)
+                                st.write("Prévia do arquivo original: ")
+                                st.dataframe(df)
+                                verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
                                 df[['DATA_EMISSAO_VALIDADA','DATA_VENCIMENTO_VALIDADA','DATA_PAGAMENTO_VALIDADA','DATA_APURACAO_VALIDADA']] = df[['DATA_EMISSAO','DATA_VENCIMENTO','DATA_PAGAMENTO','DATA_APURACAO']].apply([verificador.validarData])
-                                # Validar se as imagens estão no Painel                            
-                                df['TEM_IMAGEM'] = df[['DESCRICAO']].apply([verificador.validarPDF])                            
+                                # Validar se as imagens estão no Painel
+                                df['TEM_IMAGEM'] = df[['DESCRICAO']].apply([verificador.validarPDF])
                                 validou = 1
                             else:
                                 # Erro: 'O arquivo não tem o layout de Despesas ou não é compatível com o modelo DESPESAS GNOSIS.
                                 st.error(util.erros["03"])
-                                diferentes = [elemento for elemento in cabecalhoArquivo if elemento not in cabecalhoDespesas]                 
+                                diferentes = [elemento for elemento in cabecalhoDespesas if elemento not in cabecalhoArquivo]
                                 st.write('Colunas diferentes: ',diferentes)
-
+                        # Refatorar como feito em Despesas.
                         elif tipoarquivoEscolhido == "Contratos de Terceiros":
                             #Início das validações
                             #Valida se o cabeçalho é de um arquivo de Contratos de Terceiros

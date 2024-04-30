@@ -55,7 +55,7 @@ def carregaInstrumentos():
     return dadosContratos
 
 class Validadora:
-    def __init__(self, base_url,instituicao):        
+    def __init__(self, base_url,instituicao):
         self.base_url = base_url  # URL base para a verificação dos arquivos PDF.        
         self.instituicao = instituicao # Código da instituição
         self.url_formatada = ""
@@ -67,8 +67,10 @@ class Validadora:
         self.url_formatada = self.base_url.format(numero_da_instituicao=self.instituicao, nome_do_pdf=self.coluna_imagem)        
 
     def validarPDF(self,nome_imagem):
-        self.formatar_url(nome_imagem)        
-        #return "Valdação não realizada"    
+        if not nome_imagem:
+            return "Campo não preenchido"
+        
+        self.formatar_url(nome_imagem)
         try:
             response = requests.head(self.url_formatada)
             # Avaliação do status do arquivo baseado no tamanho indicado no cabeçalho.
@@ -100,15 +102,40 @@ class Validadora:
             else:
                 return "Não"
         else:
-            return "Não"        
-        
-    def validarCabecalho(self):
-        pass
-
-class Modelos:
-    Despesas = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;TIPO;CODIGO;CNPJ;RAZAO;CPF;NOME;NUM_DOCUMENTO;SERIE;DESCRICAO;DATA_EMISSAO;DATA_VENCIMENTO;DATA_PAGAMENTO;DATA_APURACAO;VALOR_DOCUMENTO;VALOR_PAGO;DESPESA;RUBRICA;BANCO;AGENCIA;CONTA_CORRENTE;PMT_PAGA;QTDE_PMT;IDENT_BANCARIO;FLAG_JUSTIFICATIVA'
-    ContratosTerceiros = 'COD_OS;COD_UNIDADE;COD_CONTRATO;RAZAO_SOCIAL;CNPJ;SERVICO;VALOR_MES;VIGENCIA;CONTRATO_ANO_MES_INICIO;CONTRATO_ANO_MES_FIM;REF_TRI;REF_ANO_MES;IMG_CONTRATO'
+            return "Não"  
 
 
+class Modelo:
+    def __init__(self):    
+        self.Despesas = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;TIPO;CODIGO;CNPJ;RAZAO;CPF;NOME;NUM_DOCUMENTO;SERIE;DESCRICAO;DATA_EMISSAO;DATA_VENCIMENTO;DATA_PAGAMENTO;DATA_APURACAO;VALOR_DOCUMENTO;VALOR_PAGO;DESPESA;RUBRICA;BANCO;AGENCIA;CONTA_CORRENTE;PMT_PAGA;QTDE_PMT;IDENT_BANCARIO;FLAG_JUSTIFICATIVA'
+        self.ContratosTerceiros = 'COD_OS;COD_UNIDADE;COD_CONTRATO;RAZAO_SOCIAL;CNPJ;SERVICO;VALOR_MES;VIGENCIA;CONTRATO_ANO_MES_INICIO;CONTRATO_ANO_MES_FIM;REF_TRI;REF_ANO_MES;IMG_CONTRATO'
+        self.cabecalhoDespesas = []
+        self.cabecalhoContratosTerceiros = []
 
+    def retornaCabecalhoDespesas(self):     
+        if not self.cabecalhoDespesas:
+            self.cabecalhoDespesas = self.trataCabecalho(self.Despesas)
+            return self.cabecalhoDespesas
+        else:        
+            return self.cabecalhoDespesas
     
+    def retornaCabecalhoContratosTerceiros(self):     
+        if not self.cabecalhoContratosTerceiros:
+            self.cabecalhoContratosTerceiros = self.trataCabecalho(self.ContratosTerceiros)
+            return self.cabecalhoContratosTerceiros
+        else:        
+            return self.cabecalhoContratosTerceiros
+    
+    def trataCabecalho(self,cabecalho):
+        cabecalhoTratado = cabecalho
+        cabecalhoTratado = cabecalhoTratado.replace(" ","").strip('\r\n').upper()
+        cabecalhoTratado = cabecalhoTratado.split(";")
+        return cabecalhoTratado
+    
+    def contemCabecalho(self,cabecalhoModelo,cabecalhoArquivo):
+        # Verificar se o cabecalhoModelo está contido em cabecalhoArquivo.
+        todosContidos = all(item in cabecalhoArquivo for item in cabecalhoModelo)
+        if todosContidos:
+            return True
+        else:
+            return False
