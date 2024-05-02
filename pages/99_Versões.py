@@ -3,6 +3,11 @@ import streamlit as st
 st.header("Notas de lançamentos das versões")
 st.write(" ")
 
+#Versão 0.04a
+st.subheader("Versão 0.04a - 02/05/2024",divider=True)
+st.write('Implementada melhoria na verificação dos cabeçalhos de arquivos de inclusão de Despesas e Contratos de Terceiros.')
+st.write(" ")
+
 #Versão 0.03a
 st.subheader("Versão 0.03a - 29/04/2024",divider=True)
 st.write('Implementada a validação de arquivos de inclusão de Contratos de Terceiros, com o modelo ANEXOS.')

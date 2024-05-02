@@ -50,8 +50,8 @@ with tab1:
                             cabecalhoDespesas = meuModelo.retornaCabecalhoDespesas()
 
                             if meuModelo.contemCabecalho(cabecalhoDespesas,cabecalhoArquivo):
-                                st.write('O cabeçalho é compatível com o modelo DESPESAS GNOSIS.')                        
-                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)                                                  
+                                st.write('O cabeçalho é compatível com o modelo DESPESAS GNOSIS.')                     
+                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)                                               
                                 df = df.dropna(how='all')
                                 df.fillna(0,inplace=True)
                                 st.write("Prévia do arquivo original: ")
@@ -70,15 +70,15 @@ with tab1:
                         elif tipoarquivoEscolhido == "Contratos de Terceiros":
                             #Início das validações
                             #Valida se o cabeçalho é de um arquivo de Contratos de Terceiros
-                            cabecalhoContratos = util.Modelos.ContratosTerceiros
-                            cabecalhoContratos = cabecalhoContratos.rstrip('\r\n').upper()
-                            cabecalhoContratos = cabecalhoContratos.split(";")
+                            cabecalhoContratos = meuModelo.retornaCabecalhoContratosTerceiros()                            
 
-                            if cabecalhoArquivo == cabecalhoContratos:
-                                st.write('O cabeçalho é compatível com o modelo ANEXO.')
-                                #Valida se os campos DATA estão no formato XXXX-XX-XX                                
+                            if meuModelo.contemCabecalho(cabecalhoContratos,cabecalhoArquivo):
+                                st.write('O cabeçalho é compatível com o modelo ANEXO.')                                                           
                                 df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)
-                                df = df.dropna(how='all')                                
+                                df = df.dropna(how='all')
+                                df.fillna(0,inplace=True)  
+                                st.write("Prévia do arquivo original: ")
+                                st.dataframe(df)                            
                                 verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
                                 df[['REF_ANO_MES_VALIDADA']] = df[['REF_ANO_MES']].apply([verificador.validarData])
                                 df[['CONTRATO_ANO_MES_INICIO_VALIDADA','CONTRATO_ANO_MES_FIM_VALIDADA','REF_TRI_VALIDADA']] = df[['CONTRATO_ANO_MES_INICIO','CONTRATO_ANO_MES_FIM','REF_TRI']].apply([verificador.validarDataAbreviada])
