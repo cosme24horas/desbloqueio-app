@@ -3,6 +3,11 @@ import streamlit as st
 st.header("Notas de lançamentos das versões")
 st.write(" ")
 
+#Versão 0.05a
+st.subheader("Versão 0.05a - 07/05/2024",divider=True)
+st.write('Adicionamos uma funcionalidade inteligente que busca o arquivo PDF no Painel apenas uma vez para cada referência do mesmo dentro de um arquivo analisado. Retirado o bug que inseria zeros nos campos vazios.')
+st.write(" ")
+
 #Versão 0.04a
 st.subheader("Versão 0.04a - 02/05/2024",divider=True)
 st.write('Implementada melhoria na verificação dos cabeçalhos de arquivos de inclusão de Despesas e Contratos de Terceiros.')

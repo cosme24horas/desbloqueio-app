@@ -51,9 +51,9 @@ with tab1:
 
                             if meuModelo.contemCabecalho(cabecalhoDespesas,cabecalhoArquivo):
                                 st.write('O cabeçalho é compatível com o modelo DESPESAS GNOSIS.')                     
-                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)                                               
+                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)                                  
                                 df = df.dropna(how='all')
-                                df.fillna(0,inplace=True)
+                                #df.fillna(0,inplace=True)
                                 st.write("Prévia do arquivo original: ")
                                 st.dataframe(df)
                                 verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
@@ -61,12 +61,13 @@ with tab1:
                                 # Validar se as imagens estão no Painel
                                 df['TEM_IMAGEM'] = df[['DESCRICAO']].apply([verificador.validarPDF])
                                 validou = 1
+                                
                             else:
                                 # Erro: 'O arquivo não tem o layout de Despesas ou não é compatível com o modelo DESPESAS GNOSIS.
                                 st.error(util.erros["03"])
                                 diferentes = [elemento for elemento in cabecalhoDespesas if elemento not in cabecalhoArquivo]
                                 st.write('Colunas diferentes: ',diferentes)
-                        # Refatorar como feito em Despesas.
+                        
                         elif tipoarquivoEscolhido == "Contratos de Terceiros":
                             #Início das validações
                             #Valida se o cabeçalho é de um arquivo de Contratos de Terceiros
@@ -76,7 +77,7 @@ with tab1:
                                 st.write('O cabeçalho é compatível com o modelo ANEXO.')                                                           
                                 df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)
                                 df = df.dropna(how='all')
-                                df.fillna(0,inplace=True)  
+                                #df.fillna(0,inplace=True)  
                                 st.write("Prévia do arquivo original: ")
                                 st.dataframe(df)                            
                                 verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
