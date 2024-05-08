@@ -79,7 +79,7 @@ with tab1:
                                 df = df.dropna(how='all')
                                 #df.fillna(0,inplace=True)  
                                 st.write("Prévia do arquivo original: ")
-                                st.dataframe(df)                            
+                                st.dataframe(df)
                                 verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
                                 df[['REF_ANO_MES_VALIDADA']] = df[['REF_ANO_MES']].apply([verificador.validarData])
                                 df[['CONTRATO_ANO_MES_INICIO_VALIDADA','CONTRATO_ANO_MES_FIM_VALIDADA','REF_TRI_VALIDADA']] = df[['CONTRATO_ANO_MES_INICIO','CONTRATO_ANO_MES_FIM','REF_TRI']].apply([verificador.validarDataAbreviada])

@@ -72,7 +72,7 @@ class Validadora:
             return "Campo não preenchido"
         
         self.formatar_url(nome_imagem)
-        
+
         if self.arquivos.get(self.url_formatada):
             return self.arquivos.get(self.url_formatada)
 
@@ -107,7 +107,7 @@ class Validadora:
             else:
                 return "Não"
         else:
-            return "Não"  
+            return "Não"
 
 
 class Modelo:
