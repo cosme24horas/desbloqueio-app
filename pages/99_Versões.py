@@ -5,7 +5,7 @@ st.write(" ")
 
 #Versão 0.06a
 st.subheader("Versão 0.06a - 15/05/2024",divider=True)
-st.write('Adicionas novas funcionalidades para verificação de arquivos de inclusão de Saldos e Bens Patrimoniados.')
+st.write('Adicionadas novas funcionalidades para verificação de arquivos de inclusão de Saldos e Bens Patrimoniados.')
 st.write(" ")
 
 #Versão 0.05a
