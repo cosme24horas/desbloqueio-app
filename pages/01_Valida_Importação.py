@@ -12,7 +12,7 @@ st.set_page_config(
     page_icon='https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f5a5.svg', # This is an emoji shortcode. Could be a URL too    
 )
 
-tipoArquivo = ['Despesas','Contratos de Terceiros']
+tipoArquivo = ['Despesas','Contratos de Terceiros','Saldos','Bens Patrimoniados']
 
 tab1, tab2 = st.tabs(["Envio de Arquivo","Consulta Arquivos Enviados"])
 with tab1:
@@ -58,6 +58,7 @@ with tab1:
                                 st.dataframe(df)
                                 verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
                                 df[['DATA_EMISSAO_VALIDADA','DATA_VENCIMENTO_VALIDADA','DATA_PAGAMENTO_VALIDADA','DATA_APURACAO_VALIDADA']] = df[['DATA_EMISSAO','DATA_VENCIMENTO','DATA_PAGAMENTO','DATA_APURACAO']].apply([verificador.validarData])
+                                df[['ANO_MES_REF_VALIDADA']] = df[['ANO_MES_REF']].apply([verificador.validarDataAbreviada])
                                 # Validar se as imagens estão no Painel
                                 df['TEM_IMAGEM'] = df[['DESCRICAO']].apply([verificador.validarPDF])
                                 validou = 1
@@ -90,6 +91,48 @@ with tab1:
                                 # Erro: 'O arquivo não tem o layout de Contratos de Terceiros ou não é compatível com o modelo ANEXOS.'
                                 st.error(util.erros["04"])
                                 diferentes = [elemento for elemento in cabecalhoArquivo if elemento not in cabecalhoContratos]
+                                st.write('Colunas diferentes: ',diferentes)
+                        
+                        elif tipoarquivoEscolhido == "Saldos":
+                            cabecalhoSaldos = meuModelo.retornaCabecalhoSaldos()
+                            if meuModelo.contemCabecalho(cabecalhoSaldos,cabecalhoArquivo):
+                                st.write('O cabeçalho é compatível com o modelo SALDO IPCEP.')
+                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)
+                                df = df.dropna(how='all')
+                                #df.fillna(0,inplace=True)
+                                st.write("Prévia do arquivo original: ")
+                                st.dataframe(df)
+                                verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
+                                df[['ANO_MES_REF_VALIDADA']] = df[['ANO_MES_REF']].apply([verificador.validarDataAbreviada])
+                                # Validar se as imagens estão no Painel
+                                df['TEM_IMAGEM'] = df[['EXTRATO']].apply([verificador.validarPDF])
+                                validou = 1
+                            else:
+                                # Erro: 'O arquivo não tem o layout de Contratos de Saldos ou não é compatível com o modelo SALDO IPCEP.'
+                                st.error(util.erros["05"])
+                                diferentes = [elemento for elemento in cabecalhoArquivo if elemento not in cabecalhoSaldos]
+                                st.write('Colunas diferentes: ',diferentes)
+
+                        elif tipoarquivoEscolhido == "Bens Patrimoniados":
+                            cabecalhoBens = meuModelo.retornaCabecalhoBens()
+                            if meuModelo.contemCabecalho(cabecalhoBens,cabecalhoArquivo):
+                                st.write('O cabeçalho é compatível com o modelo BENS CEP28.')
+                                df = pd.read_csv(arquivo, sep=';',header=0,index_col=False,dtype=str)
+                                df = df.dropna(how='all')
+                                #df.fillna(0,inplace=True)
+                                st.write("Prévia do arquivo original: ")
+                                st.dataframe(df)
+                                # 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;NUM_CONTROLE_OS;NUM_CONTROLE_GOV;COD_TIPO;BEM_TIPO;DESCRICAO_NF;CNPJ;FORNECEDOR;QUANTIDADE;NF;DATA_AQUISICAO;VIDA_UTIL;VALOR;VINCULACAO;SETOR_DESTINO;IMG_NF'
+                                verificador = util.Validadora(st.secrets['base_url'], df['COD_OS'][0])
+                                df[['ANO_MES_REF_VALIDADA']] = df[['ANO_MES_REF']].apply([verificador.validarDataAbreviada])
+                                df[['DATA_AQUISICAO_VALIDADA']] = df[['DATA_AQUISICAO']].apply([verificador.validarData])
+                                # Validar se as imagens estão no Painel
+                                df['TEM_IMAGEM'] = df[['IMG_NF']].apply([verificador.validarPDF])
+                                validou = 1
+                            else:
+                                # Erro: ''O arquivo não tem o layout de Bens Patrimoniados ou não é compatível com o modelo BENS CEP28.'
+                                st.error(util.erros["05"])
+                                diferentes = [elemento for elemento in cabecalhoArquivo if elemento not in cabecalhoBens]
                                 st.write('Colunas diferentes: ',diferentes)
                         else:
                             st.warning("Função em desenvolvimento! 😢",icon="⚠️")                    

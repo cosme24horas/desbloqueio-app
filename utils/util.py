@@ -10,7 +10,9 @@ erros = {
     "01": "Todos os campos devem ser preenchidos!",
     "02": "O arquivo NÃO está no formato UTF-8!",
     "03": "O arquivo não tem o layout de Despesas ou não é compatível com o modelo DESPESAS GNOSIS.",
-    "04": "O arquivo não tem o layout de Contratos de Terceiros ou não é compatível com o modelo ANEXOS."
+    "04": "O arquivo não tem o layout de Contratos de Terceiros ou não é compatível com o modelo ANEXOS.",
+    "05": 'O arquivo não tem o layout de Contratos de Saldos ou não é compatível com o modelo SALDO IPCEP.',
+    "06": 'O arquivo não tem o layout de Bens Patrimoniados ou não é compatível com o modelo BENS CEP28.'
 }
 
 def carregaSecretarias():
@@ -111,11 +113,15 @@ class Validadora:
 
 
 class Modelo:
-    def __init__(self):    
+    def __init__(self):
         self.Despesas = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;TIPO;CODIGO;CNPJ;RAZAO;CPF;NOME;NUM_DOCUMENTO;SERIE;DESCRICAO;DATA_EMISSAO;DATA_VENCIMENTO;DATA_PAGAMENTO;DATA_APURACAO;VALOR_DOCUMENTO;VALOR_PAGO;DESPESA;RUBRICA;BANCO;AGENCIA;CONTA_CORRENTE;PMT_PAGA;QTDE_PMT;IDENT_BANCARIO;FLAG_JUSTIFICATIVA'
         self.ContratosTerceiros = 'COD_OS;COD_UNIDADE;COD_CONTRATO;RAZAO_SOCIAL;CNPJ;SERVICO;VALOR_MES;VIGENCIA;CONTRATO_ANO_MES_INICIO;CONTRATO_ANO_MES_FIM;REF_TRI;REF_ANO_MES;IMG_CONTRATO'
+        self.Saldos = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;BANCO;AGENCIA;CONTA_CORRENTE;VL_CONTA_CORRENTE;VL_APL_FINANCEIRA;VL_CONTA_PROVISAO;VL_EM_ESPECIE;EXTRATO'
+        self.Bens = 'COD_OS;COD_UNIDADE;COD_CONTRATO;ANO_MES_REF;NUM_CONTROLE_OS;NUM_CONTROLE_GOV;COD_TIPO;BEM_TIPO;DESCRICAO_NF;CNPJ;FORNECEDOR;QUANTIDADE;NF;DATA_AQUISICAO;VIDA_UTIL;VALOR;VINCULACAO;SETOR_DESTINO;IMG_NF'
         self.cabecalhoDespesas = []
         self.cabecalhoContratosTerceiros = []
+        self.cabecalhoSaldos = []
+        self.cabecalhoBens = []
 
     def retornaCabecalhoDespesas(self):     
         if not self.cabecalhoDespesas:
@@ -130,6 +136,20 @@ class Modelo:
             return self.cabecalhoContratosTerceiros
         else:        
             return self.cabecalhoContratosTerceiros
+        
+    def retornaCabecalhoSaldos(self):     
+        if not self.cabecalhoSaldos:
+            self.cabecalhoSaldos = self.trataCabecalho(self.Saldos)
+            return self.cabecalhoSaldos
+        else:        
+            return self.cabecalhoSaldos
+
+    def retornaCabecalhoBens(self):     
+        if not self.cabecalhoBens:
+            self.cabecalhoBens = self.trataCabecalho(self.Bens)
+            return self.cabecalhoBens
+        else:        
+            return self.cabecalhoBens              
     
     def trataCabecalho(self,cabecalho):
         cabecalhoTratado = cabecalho
