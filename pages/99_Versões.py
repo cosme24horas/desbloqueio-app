@@ -3,6 +3,11 @@ import streamlit as st
 st.header("Notas de lançamentos das versões")
 st.write(" ")
 
+#Versão 0.07a
+st.subheader("Versão 0.07a - 06/06/2024",divider=True)
+st.write('Adicionadas novas funcionalidades para verificar a existência das imagens no Painel dentro de arquivos de Alteração.')
+st.write(" ")
+
 #Versão 0.06a
 st.subheader("Versão 0.06a - 15/05/2024",divider=True)
 st.write('Adicionadas novas funcionalidades para verificação de arquivos de inclusão de Saldos e Bens Patrimoniados.')

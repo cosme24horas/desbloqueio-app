@@ -135,7 +135,7 @@ with tab1:
                                 diferentes = [elemento for elemento in cabecalhoArquivo if elemento not in cabecalhoBens]
                                 st.write('Colunas diferentes: ',diferentes)
                         else:
-                            st.warning("Função em desenvolvimento! 😢",icon="⚠️")                    
+                            st.warning("Função em desenvolvimento! 😢",icon="⚠️")
                         
                         st.success('Processamento concluído!')
                     except UnicodeDecodeError:
