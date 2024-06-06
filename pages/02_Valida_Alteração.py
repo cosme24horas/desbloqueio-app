@@ -45,7 +45,7 @@ with tab1:
 
                         if not df_filtrado.empty:
                             # Adicionar uma nova coluna para os resultados da validação
-                            verificador = util.Validadora(st.secrets['base_url'], cod_os[0])
+                            verificador = util.Validadora(st.secrets['base_url'], cod_os)                            
                             df_filtrado['TEM_IMAGEM'] = df_filtrado[['NOVO_VALOR']].apply([verificador.validarPDF])                            
                             validou = True
                             st.success('Processamento concluído!')
