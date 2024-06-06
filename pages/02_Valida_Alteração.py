@@ -16,7 +16,7 @@ with tab1:
     instituicoes = util.carregaInstituicoes()
     contratos = util.carregaContratos()
     validou = False
-    listaIMG = ['IMG_CONTRATO', 'EXTRATO', 'IMG_NF', 'DESCRICAO', 'Descricao', 'DESCRIÇÃO']
+    listaIMG = ['IMG_CONTRATO', 'EXTRATO', 'IMG_NF', 'DESCRICAO', 'Descricao', 'DESCRIÇÃO','Descricão']
 
     with st.form('Valida Importação', clear_on_submit=False):
         instituicaoEscolhida = st.selectbox('Instituição', instituicoes, index=None, placeholder="Selecione a Instituição")
