@@ -3,7 +3,7 @@ import requests
 import json
 import re
 ## DEBUG ##
-#import streamlit as st
+import streamlit as st
 
 # Dicionário de erros
 erros = {
@@ -57,41 +57,49 @@ def carregaInstrumentos():
     return dadosContratos
 
 class Validadora:
-    def __init__(self, base_url,instituicao):
-        self.base_url = base_url  # URL base para a verificação dos arquivos PDF.        
-        self.instituicao = instituicao # Código da instituição
+    def __init__(self, base_url, instituicao):
+        self.base_url = base_url  # URL base para a verificação dos arquivos PDF.
+        self.instituicao = instituicao  # Código da instituição
         self.url_formatada = ""
         self.arquivos = {}
+        self.session = requests.Session()  # Use uma sessão para melhor desempenho em múltiplas requisições
 
-    def formatar_url(self,nome_imagem):
+    def formatar_url(self, nome_imagem):
+        # Remove leading/trailing spaces and replace spaces with %20 for URL encoding
         self.coluna_imagem = nome_imagem.strip().replace(" ", "%20")
+        # Ensure the file name ends with .pdf
         if not self.coluna_imagem.endswith('.pdf'):
-            self.coluna_imagem = self.coluna_imagem + '.pdf'
-        self.url_formatada = self.base_url.format(numero_da_instituicao=self.instituicao, nome_do_pdf=self.coluna_imagem)        
+            self.coluna_imagem += '.pdf'
+        # Format the URL with the institution code and the PDF file name
+        self.url_formatada = self.base_url.format(numero_da_instituicao=self.instituicao, nome_do_pdf=self.coluna_imagem)
 
-    def validarPDF(self,nome_imagem):
+    def validarPDF(self, nome_imagem):
         if not nome_imagem:
             return "Campo não preenchido"
         
         self.formatar_url(nome_imagem)
 
-        if self.arquivos.get(self.url_formatada):
-            return self.arquivos.get(self.url_formatada)
+        # Return cached result if available
+        if self.url_formatada in self.arquivos:
+            return self.arquivos[self.url_formatada]
 
         try:
-            response = requests.head(self.url_formatada)
-            # Avaliação do status do arquivo baseado no tamanho indicado no cabeçalho.
+            response = self.session.head(self.url_formatada, timeout=10)
+            # Evaluate the file status based on the header's Content-Length
             if response.status_code == 200:
-                self.arquivos[self.url_formatada] = 'Sim' #status = 'Sim'
                 if int(response.headers.get('Content-Length', 1)) == 0:
-                    self.arquivos[self.url_formatada] = 'Corrompido' #status = 'Corrompido'                    
+                    status = 'Corrompido'
+                else:
+                    status = 'Sim'
             else:
-                self.arquivos[self.url_formatada] = 'Não' #status = 'Não'
+                status = 'Não'
         except requests.RequestException as e:
             status = f'Erro de verificação: {str(e)}'
-        return str(self.arquivos[self.url_formatada])
-    
-    def validarData(self,data = None):
+
+        self.arquivos[self.url_formatada] = status
+        return status
+
+    def validarData(self, data=None):
         padrao = re.compile(r'^\d{4}-\d{2}-\d{2}$')
         if data is not None:
             if re.match(padrao, str(data)):
@@ -100,9 +108,9 @@ class Validadora:
                 return "Não"
         else:
             return "Não"
-        
-    def validarDataAbreviada(self,data = None):
-        padrao = re.compile(r'^\d{4}-\d{2}')
+
+    def validarDataAbreviada(self, data=None):
+        padrao = re.compile(r'^\d{4}-\d{2}$')
         if data is not None:
             if re.match(padrao, str(data)):
                 return "Sim"
@@ -110,7 +118,6 @@ class Validadora:
                 return "Não"
         else:
             return "Não"
-
 
 class Modelo:
     def __init__(self):

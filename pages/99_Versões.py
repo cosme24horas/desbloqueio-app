@@ -3,6 +3,11 @@ import streamlit as st
 st.header("Notas de lançamentos das versões")
 st.write(" ")
 
+#Versão 1.0a
+st.subheader("Versão 1.0a - 21/06/2024",divider=True)
+st.write('Implementadas melhorias nas funcionalidades de verificação da existência de documentos PDF nos arquivos de inclusão e limitação nessas verificações para arquivos de 2000 linhas.')
+st.write(" ")
+
 #Versão 0.07a
 st.subheader("Versão 0.07a - 06/06/2024",divider=True)
 st.write('Adicionadas novas funcionalidades para verificar a existência das imagens no Painel dentro de arquivos de Alteração.')
